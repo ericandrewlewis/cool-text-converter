@@ -1,0 +1,151 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		textarea {
+			font-size: 16px;
+			width: 80%;
+			display: block;
+			margin: 20px auto;
+			height: 200px;
+		}
+	</style>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script>
+		var latinDiacritics = {
+			A: [Ǎ]
+			B:
+			C:
+			D:
+			E:
+			F:
+			G:
+			H:
+			I:
+			j:
+			K:
+			L:
+			M:
+			N:
+			O:
+			P:
+			Q:
+			R:
+			S:
+			T:
+			U:
+			V:
+			W:
+			X:
+			Y:
+			Z:
+		}
+
+B̌
+Č
+Ď
+Dž
+Ǆ
+Ě
+F̌
+Ǧ
+Ȟ
+Ǐ
+J̌
+Ǩ
+Ľ
+Ň
+Ǒ
+P̌
+Ř
+Ř̩
+Š
+Ṧ
+Ť
+Ǔ
+Ǚ
+V̌
+X̌
+Ž
+Ǯ
+
+ǎ
+	b̌
+	č
+	ď
+	ǆ
+	ě
+	f̌
+	ǧ
+	ȟ
+	ǐ
+	ǰ
+	ǩ
+	ľ
+	ň
+	ǒ
+	p̌
+	ř
+	ř̩
+	š
+	ṧ
+	ť
+	ǔ
+	ǚ
+	v̌
+	x̌
+	ž
+	ǯ
+	var similarCharacterMap = {
+		ǎí
+		a: [ 'ȧ', 'ǎ', 'ꜳ', '∧', '𝛛', '∂', '𝜕', 'ƌ' ],
+		b: [ 'ѣ', 'Ƃ', 'ᒁ', 'ɓ' ],
+		c: [ '¢', 'ȼ', 'ç' ],
+		d: [ 'ɗ', 'ɖ', 'ᖂ', 'đ', '𝛿' ],
+		e: [ 'ě', 'ҿ', 'Ҿ', 'ᕨ' ],
+		f: [ '𝑓', 'ƒ', '𝔨', 'ſ' ],
+		g: [ 'ᶃ', 'ǧ', 'ǥ', 'ǵ', 'ɠ' ],
+		h: [ 'ɦ', 'ħ' ],
+		i: [ 'ǐ', 'ﮉ', '𝞲', 'ɨ' ],
+		j: [ '𝒿', 'ﻝ', 'ﳍ‎', 'ﺯ' ],
+		k: [ '𝓀', 'ƙ', 'Ƙ', 'ﲀ‎', '𝝹' ],
+		l: [ '|', 'ł', 'ɫ', 'ƚ', 'ŀ' ],
+		m: [ 'm', 'ʍ', '₥', 'ɱ' ],
+		n: [ '𝙣', 'ﬨ‎', '𝛑', 'ɲ', '𝔶', 'ɳ', '𝞰', 'ɲ' ],
+		o: [ '☉', 'റ', '𝜎', '⊖', 'ǒ', 'ø', 'ɵ', 'ơ', 'ǒ' ],
+		p: [ 'ƿ', '𝞺', '⍴', '𝜑' ],
+		q: [ 'ʠ', 'ᶐ' ],
+		r: [ 'ґ', 'ɼ' ],
+		s: [ 'ƽ', 'ʂ', 'ᔢ', '∫' ],
+		t: [ 'ᴛ', 'ț', 'ﺥ', 'ƫ', '〒', 'ŧ', 'ᆃ' ],
+		u: [ '⨄', 'µ', '⨿', '𝞄' ],
+		v: [ '𝛁', '𝞩', '⋁' ],
+		w: [ 'ɯ', '𝝎', 'w', 'ѽ', 'שׂ‎' ],
+		x: [ '×', '╳', '⤬', '𝒙', '⋈', '⨰', '𝒳', '𝔵' ],
+		y: [ 'ｙ', 'Ӌ', 'ᶌ' ],
+		z: [ '𝔃', '𝔷', 'ʐ', 'ȥ', 'ƶ', 'ཪ' ]
+	};
+	$(function() {
+		var translate = function(){
+			var string = $('.input').val();
+			var destinationString = '';
+			for ( var i = 0; i < string.length; i++ ) {
+				if ( similarCharacterMap[ string[i] ] ) {
+					var randomIndex = Math.floor( similarCharacterMap[ string[i] ].length * Math.random() );
+					destinationString += similarCharacterMap[ string[i] ][ randomIndex ];
+				} else {
+					destinationString += string[i];
+				}
+			}
+			$('.output').val(destinationString);
+		};
+		$('.input').on('keyup', translate );
+	});
+	</script>
+</head>
+<body>
+	<textarea class="input"></textarea>
+	<textarea class="output"></textarea>
+</body>
+</html>
