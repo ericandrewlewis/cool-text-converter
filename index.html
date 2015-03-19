@@ -16,108 +16,103 @@
 	</style>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script>
-		var latinCharactersWithCarons = {
-			A: 'Ǎ',
-			B: 'B',
-			C: 'Č',
-			D: 'Ď',
-			E: 'Ě',
-			F: 'F',
-			G: 'Ǧ',
-			H: 'Ȟ',
-			I: 'Ǐ',
-			J: 'J',
-			K: 'Ǩ',
-			L: 'Ľ',
-			M: 'M',
-			N: 'Ň',
-			O: 'Ǒ',
-			P: 'P',
-			Q: 'Ř',
-			R: 'Ř',
-			S: ['Š', 'Ṧ'],
-			T: 'Ť',
-			U: ['Ǔ', 'Ǚ'],
-			V: 'V',
-			W: 'W',
-			X: 'X',
-			Y: 'Y',
-			Z: 'Ž',
-			a: 'ǎ',
-			b: 'b',
-			c: 'č',
-			d: 'ď',
-			e: 'ě',
-			f: 'f',
-			g: 'ǧ',
-			h: 'ȟ',
-			i: 'ǐ',
-			j: 'ǰ',
-			k: 'ǩ',
-			l: 'ľ',
-			m: 'm',
-			n: 'ň',
-			o: 'ǒ',
-			p: 'p',
-			q: 'q',
-			r: ['ř', 'ř'],
-			s: ['š', 'ṧ'],
-			t: 'ť',
-			u: ['ǔ', 'ǚ'],
-			v: 'v',
-			w: 'w',
-			x: 'x',
-			y: 'y',
-			z: 'ž'
-		};
+	var characterSets = {};
+	var registerCharacterSet = function( args ) {
+		characterSets[args.id] = args.set;
+	};
+	var getCharacterSet = function( id ) {
+		return characterSets[id];
+	};
+	var getFirstCharacterSet = function() {
+		for ( prop in characterSets ) {
+			return characterSets[prop];
+		}
+	};
+
+	registerCharacterSet( {
+		id: 'latin-characters-with-carons',
+		displayName: 'Latin characters with carons',
+		set: {
+			A: 'Ǎ', C: 'Č', D: 'Ď', E: 'Ě', F: 'F', G: 'Ǧ', H: 'Ȟ', I: 'Ǐ', K: 'Ǩ',
+			L: 'Ľ', N: 'Ň', O: 'Ǒ', P: 'P', Q: 'Ř', R: 'Ř', S: ['Š', 'Ṧ'], T: 'Ť',
+			U: ['Ǔ', 'Ǚ'], Z: 'Ž', a: 'ǎ', c: 'č', d: 'ď', e: 'ě', f: 'f', g: 'ǧ',
+			h: 'ȟ', i: 'ǐ', j: 'ǰ', k: 'ǩ', l: 'ľ', n: 'ň', o: 'ǒ',r: ['ř', 'ř'],
+			s: ['š', 'ṧ'], t: 'ť', u: ['ǔ', 'ǚ'], z: 'ž'
+		}
+	} );
 
 	$(function() {
-		var translateWith = {
-			carons: true
+		window.characterBucket = new function() {
+			this.initialize = function() {
+				this.characters = { A: [], B: [], C: [], D: [], E: [], F: [], G: [],
+				H: [], I: [], J: [], K: [], L: [], M: [], N: [], O: [], P: [], Q: [],
+				R: [], S: [], T: [], U: [], V: [], W: [], X: [], Y: [], Z: [], a: [],
+				b: [], c: [], d: [], e: [], f: [], g: [], h: [], i: [], j: [], k: [],
+				l: [], m: [], n: [], o: [], p: [], q: [], r: [], s: [], t: [], u: [],
+				v: [], w: [], x: [], y: [], z: [] };
+			};
+			this.addCharaters = function(set) {
+				for ( prop in set ) {
+					if ( Array.isArray( set[prop] ) && this.characters.hasOwnProperty( prop ) ) {
+						this.characters[prop].concat( set[prop] );
+					} else if ( typeof set[prop] == 'string' ) {
+						this.characters[prop].push( set[prop] );
+					}
+				}
+			};
+
+			this.fillInCharaters = function() {
+				// Fill in any bcket gaps with the defalt latin character.
+				for ( prop in this.characters ) {
+					if ( this.characters[prop].length == 0 ) {
+						this.characters[prop].push( prop );
+					}
+				}
+			};
+
+			this.getRandomReplacementCharacter = function(character) {
+				if ( this.characters[character] ) {
+					return this.characters[character][ Math.floor(Math.random() * this.characters[character].length) ];
+				} else {
+					return character;
+				}
+			};
 		};
-		var translate = function(){
+		var translate = function() {
 			var string = $('.input').val();
 			var destinationString = '';
 			for ( var i = 0; i < string.length; i++ ) {
-				if ( translateWith.carons ) {
-					if ( latinCharactersWithCarons[ string[i] ] ) {
-						if ( typeof latinCharactersWithCarons[ string[i] ] == "string" ) {
-							destinationString += latinCharactersWithCarons[ string[i] ]
-							continue;
-						} else if ( typeof latinCharactersWithCarons[ string[i] ] == "object" && Array.isArray( latinCharactersWithCarons[ string[i] ] ) ) {
-							var randomIndex = Math.floor( latinCharactersWithCarons[ string[i] ].length * Math.random() );
-							destinationString += latinCharactersWithCarons[ string[i] ][ randomIndex ];
-							continue;
-						}
-					}
-				}
-				destinationString += string[i];
+				destinationString += characterBucket.getRandomReplacementCharacter(string[i]);
 			}
 			$('.output').val(destinationString);
 		};
-		var updateTranslateWith = function() {
-			var caronsOn = $('.carons-checkbox').is(':checked');
-			if ( caronsOn ) {
-				translateWith.carons = true;
-			} else {
-				translateWith.carons = false;
-			}
+		var updateBucket = function() {
+			characterBucket.initialize();
+			$('.translate-group').each( function( index, element ) {
+				$el = $(element);
+				if ( ! $el.is(':checked') ) {
+					return;
+				}
+				var set = getCharacterSet( $el.data( 'character-group-name' ) );
+				characterBucket.addCharaters( set );
+			});
+			characterBucket.fillInCharaters();
 		};
 		$('.translate-group').on('change', function() {
-			updateTranslateWith();
+			updateBucket();
 			translate();
 		} );
 		$('.input').on('keyup', translate );
-		translate();
+		$('.translate-group').first().trigger('click');
 	});
 	</script>
 </head>
 <body>
 	<h1>Cool Text Converter</h1>
 	<div class="container">
-		<textarea class="input">Hi</textarea>
+		<textarea class="input">hello</textarea>
 		<h3>Translate with: </h3>
-		<label><input type="checkbox" class="translate-group carons-checkbox" value="1" checked="checked">Latin characters with carons</label>
+		<label><input type="checkbox" data-character-group-name="latin-characters-with-carons" class="translate-group" value="1">Latin characters with carons</label>
 		<textarea class="output" readonly></textarea>
 	</div>
 </body>
