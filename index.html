@@ -8,10 +8,11 @@
 		margin: 0 auto;
 	}
 	textarea {
-		font-size: 14px;
-		width: 100%;
 		display: block;
+		width: 100%;
 		height: 200px;
+		font-size: 14px;
+		padding: 10px;
 	}
 	</style>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
@@ -31,13 +32,24 @@
 
 	registerCharacterSet( {
 		id: 'latin-characters-with-carons',
-		displayName: 'Latin characters with carons',
 		set: {
 			A: 'Ǎ', C: 'Č', D: 'Ď', E: 'Ě', F: 'F', G: 'Ǧ', H: 'Ȟ', I: 'Ǐ', K: 'Ǩ',
 			L: 'Ľ', N: 'Ň', O: 'Ǒ', P: 'P', Q: 'Ř', R: 'Ř', S: ['Š', 'Ṧ'], T: 'Ť',
 			U: ['Ǔ', 'Ǚ'], Z: 'Ž', a: 'ǎ', c: 'č', d: 'ď', e: 'ě', f: 'f', g: 'ǧ',
 			h: 'ȟ', i: 'ǐ', j: 'ǰ', k: 'ǩ', l: 'ľ', n: 'ň', o: 'ǒ',r: ['ř', 'ř'],
 			s: ['š', 'ṧ'], t: 'ť', u: ['ǔ', 'ǚ'], z: 'ž'
+		}
+	} );
+
+	registerCharacterSet( {
+		id: 'latin-characters-with-rings',
+		set: {
+			A: [ '\u00C5', '\u01FA', '\u00C5\u0302', '\u0100\u030A', '\u0104\u030A', '\u00C5\u0331', '\u1E00' ],
+			a: [ '\u00E5', '\u01FB', '\u00E5\u0302', '\u0101\u030A', '\u0105\u030A', '\u00E5\u0331', '\u1E01' ],
+			E: ['\i fell into a ring of fire\u030A'], e: '\u0065\u030A', U: '\u016E', u: '\u016F',
+			R: [ '\u0052\u0325','\u0052\u0325\u0304' ], r: ['\u0072\u0325', '\u0072\u0325\u0304'],
+			W: '\u0057\u030A', w: '\u1E98', Y: '\u0059\u030A', y: '\u1E99',
+			Q: '\u0051\u030A', q: '\u0071\u030A', X: '\u0058\u030A', x: '\u0078\u030A'
 		}
 	} );
 
@@ -54,7 +66,7 @@
 			this.addCharaters = function(set) {
 				for ( prop in set ) {
 					if ( Array.isArray( set[prop] ) && this.characters.hasOwnProperty( prop ) ) {
-						this.characters[prop].concat( set[prop] );
+						this.characters[prop] = this.characters[prop].concat( set[prop] );
 					} else if ( typeof set[prop] == 'string' ) {
 						this.characters[prop].push( set[prop] );
 					}
@@ -103,16 +115,32 @@
 			translate();
 		} );
 		$('.input').on('keyup', translate );
-		$('.translate-group').first().trigger('click');
+		$('.translate-group').eq(1).trigger('click');
 	});
 	</script>
 </head>
 <body>
 	<h1>Cool Text Converter</h1>
 	<div class="container">
-		<textarea class="input">hello</textarea>
+		<textarea class="input">I fell into a Ring of Fire</textarea>
 		<h3>Translate with: </h3>
-		<label><input type="checkbox" data-character-group-name="latin-characters-with-carons" class="translate-group" value="1">Latin characters with carons</label>
+		<label>
+			<input
+			       type="checkbox"
+			       data-character-group-name="latin-characters-with-carons"
+			       class="translate-group"
+			       value="1">
+			Latin characters with carons
+		</label>
+		<label>
+			<input
+			       type="checkbox"
+			       data-character-group-name="latin-characters-with-rings"
+			       class="translate-group"
+			       value="1">
+			Latin characters with rings
+		</label>
+
 		<textarea class="output" readonly></textarea>
 	</div>
 </body>
