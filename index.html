@@ -65,7 +65,6 @@
 		}
 	} );
 
-
 	$(function() {
 		window.characterBucket = new function() {
 			this.initialize = function() {
@@ -102,6 +101,20 @@
 					return character;
 				}
 			};
+
+			this.updateBucket = function() {
+				var self = this;
+				this.initialize();
+				$('.translate-group').each( function( index, element ) {
+					$el = $(element);
+					if ( ! $el.is(':checked') ) {
+						return;
+					}
+					var set = getCharacterSet( $el.data( 'character-group-name' ) );
+					self.addCharaters( set );
+				});
+				this.fillInCharaters();
+			};
 		};
 		var translate = function() {
 			var string = $('.input').val();
@@ -110,21 +123,10 @@
 				destinationString += characterBucket.getRandomReplacementCharacter(string[i]);
 			}
 			$('.output').val(destinationString);
-		};
-		var updateBucket = function() {
-			characterBucket.initialize();
-			$('.translate-group').each( function( index, element ) {
-				$el = $(element);
-				if ( ! $el.is(':checked') ) {
-					return;
-				}
-				var set = getCharacterSet( $el.data( 'character-group-name' ) );
-				characterBucket.addCharaters( set );
-			});
-			characterBucket.fillInCharaters();
+
 		};
 		$('.translate-group').on('change', function() {
-			updateBucket();
+			characterBucket.updateBucket();
 			translate();
 		} );
 		$('.input').on('keyup', translate );
