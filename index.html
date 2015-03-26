@@ -17,20 +17,15 @@
 	</style>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script>
-	var characterSets = {};
-	var registerCharacterSet = function( args ) {
-		characterSets[args.id] = args.set;
+	var stringTransformers = {};
+	var registerStringTransformer = function( transformer ) {
+		stringTransformers[transformer.id] = transformer;
 	};
-	var getCharacterSet = function( id ) {
-		return characterSets[id];
-	};
-	var getFirstCharacterSet = function() {
-		for ( prop in characterSets ) {
-			return characterSets[prop];
-		}
+	var getStringTransformer = function( id ) {
+		return stringTransformers[id];
 	};
 
-	registerCharacterSet( {
+	registerStringTransformer( {
 		id: 'latin-characters-with-carons',
 		set: {
 			A: 'Ǎ', C: 'Č', D: 'Ď', E: 'Ě', F: 'F', G: 'Ǧ', H: 'Ȟ', I: 'Ǐ', K: 'Ǩ',
@@ -38,10 +33,10 @@
 			U: ['Ǔ', 'Ǚ'], Z: 'Ž', a: 'ǎ', c: 'č', d: 'ď', e: 'ě', f: 'f', g: 'ǧ',
 			h: 'ȟ', i: 'ǐ', j: 'ǰ', k: 'ǩ', l: 'ľ', n: 'ň', o: 'ǒ', r: ['ř', 'ř'],
 			s: ['š', 'ṧ'], t: 'ť', u: ['ǔ', 'ǚ'], z: 'ž'
-		}
+		},
 	} );
 
-	registerCharacterSet( {
+	registerStringTransformer( {
 		id: 'latin-characters-with-rings',
 		set: {
 			A: [ '\u00C5', '\u01FA', '\u00C5\u0302', '\u0100\u030A', '\u0104\u030A', '\u00C5\u0331', '\u1E00' ],
@@ -53,84 +48,82 @@
 		}
 	} );
 
-	registerCharacterSet( {
+	registerStringTransformer( {
 		id: 'latin-characters-upside-down-and-backwards',
 		set: {
-			A: '∀', B: '𐐒', C: 'Ɔ', D: 'p', E: 'Ǝ', F: 'Ⅎ', G: 'פ',
-			H: 'H', I: 'I', J: 'ſ', K: 'ʞ', L: '˥', M: 'W', N: 'N', O: 'O', P: 'Ԁ', Q: 'Q',
-			R: 'ɹ', S: 'S', T: '┴', U: '∩', V: 'Λ', W: 'M', X: 'X', Y: '⅄', Z: 'Z', a: 'ɐ',
-			b: 'q', c: 'ɔ', d: 'p', e: 'ǝ', f: 'ɟ', g: 'ƃ', h: 'ɥ', i: 'ᴉ', j: 'ɾ', k: 'ʞ',
-			l: 'l', m: 'ɯ', n: 'u', o: 'o', p: 'd', q: 'b', r: 'ɹ', s: 's', t: 'ʇ', u: 'n',
+			A: 'ɐ', B: 'q', C: 'ɔ', D: 'p', E: 'ǝ', F: 'ɟ', G: 'ƃ', H: 'ɥ', I: 'ᴉ', J: 'ɾ', K: 'ʞ',
+			L: 'ן', M: 'ɯ', N: 'u', O: 'o', P: 'd', Q: 'b', R: 'ɹ', S: 's', T: 'ʇ', U: 'n',
+			V: 'ʌ', W: 'ʍ', X: 'x', Y: 'ʎ', Z: 'z',
+			a: 'ɐ', b: 'q', c: 'ɔ', d: 'p', e: 'ǝ', f: 'ɟ', g: 'ƃ', h: 'ɥ', i: 'ᴉ', j: 'ɾ', k: 'ʞ',
+			l: 'ן', m: 'ɯ', n: 'u', o: 'o', p: 'd', q: 'b', r: 'ɹ', s: 's', t: 'ʇ', u: 'n',
 			v: 'ʌ', w: 'ʍ', x: 'x', y: 'ʎ', z: 'z'
+		},
+		afterCharactersMapped: function(string) {
+			var reversed = '';
+			for (var i = string.length - 1; i >= 0; i--)
+				reversed += string[i];
+			return reversed;
 		}
 	} );
 
 	$(function() {
+		/**
+		 * The Bucket maps characters from your source character set to a target set.
+		 */
 		window.characterBucket = new function() {
-			this.initialize = function() {
-				this.characters = { A: [], B: [], C: [], D: [], E: [], F: [], G: [],
-				H: [], I: [], J: [], K: [], L: [], M: [], N: [], O: [], P: [], Q: [],
-				R: [], S: [], T: [], U: [], V: [], W: [], X: [], Y: [], Z: [], a: [],
-				b: [], c: [], d: [], e: [], f: [], g: [], h: [], i: [], j: [], k: [],
-				l: [], m: [], n: [], o: [], p: [], q: [], r: [], s: [], t: [], u: [],
-				v: [], w: [], x: [], y: [], z: [] };
-			};
-			this.addCharaters = function(set) {
-				for ( prop in set ) {
-					if ( Array.isArray( set[prop] ) && this.characters.hasOwnProperty( prop ) ) {
-						this.characters[prop] = this.characters[prop].concat( set[prop] );
-					} else if ( typeof set[prop] == 'string' ) {
-						this.characters[prop].push( set[prop] );
-					}
-				}
-			};
-
-			this.fillInCharaters = function() {
-				// Fill in any bcket gaps with the defalt latin character.
-				for ( prop in this.characters ) {
-					if ( this.characters[prop].length == 0 ) {
-						this.characters[prop].push( prop );
-					}
-				}
-			};
-
-			this.getRandomReplacementCharacter = function(character) {
-				if ( this.characters[character] ) {
-					return this.characters[character][ Math.floor(Math.random() * this.characters[character].length) ];
+			/**
+			 * Replace a regular character with a character from the target character set.
+			 *
+			 * @param  {string} character
+			 * @return {string}
+			 */
+			this.mapCharacter = function(character) {
+				if ( this.stringTransformer.set[character] ) {
+					var characters = this.stringTransformer.set[character];
+					return characters[ Math.floor(Math.random() * characters.length) ];
 				} else {
 					return character;
 				}
 			};
 
+			/**
+			 * Update the bucket of characters based on the character set selected
+			 * by the user.
+			 */
 			this.updateBucket = function() {
-				var self = this;
-				this.initialize();
-				$('.translate-group').each( function( index, element ) {
-					$el = $(element);
-					if ( ! $el.is(':checked') ) {
-						return;
-					}
-					var set = getCharacterSet( $el.data( 'character-group-name' ) );
-					self.addCharaters( set );
-				});
-				this.fillInCharaters();
+				var id = $('.translate-group:checked').data( 'character-group-name' );
+				this.stringTransformer = getStringTransformer( id );
 			};
 		};
-		var translate = function() {
-			var string = $('.input').val();
-			var destinationString = '';
-			for ( var i = 0; i < string.length; i++ ) {
-				destinationString += characterBucket.getRandomReplacementCharacter(string[i]);
-			}
-			$('.output').val(destinationString);
+
+		var translator = new function() {
+			this.characterMapper = characterBucket;
+			this.translate = function() {
+				var string = $('.input').val();
+				var destinationString = '';
+				for ( var i = 0; i < string.length; i++ ) {
+					destinationString += this.characterMapper.mapCharacter(string[i]);
+				}
+				if ( typeof this.characterMapper.stringTransformer.afterCharactersMapped == 'function' ) {
+					destinationString = this.characterMapper.stringTransformer.afterCharactersMapped( destinationString );
+				}
+				$('.output').val(destinationString);
+			};
 
 		};
+
+		/*
+		 * When a group is selected,
+		 * update the character bucket and retranslate the string.
+		 */
 		$('.translate-group').on('change', function() {
 			characterBucket.updateBucket();
-			translate();
+			translator.translate();
 		} );
-		$('.input').on('keyup', translate );
-		$('.translate-group').eq(1).trigger('click');
+
+		$('.input').on('keyup', function() { translator.translate() } );
+
+		$('.translate-group').last().trigger('click');
 	});
 	</script>
 </head>
@@ -169,5 +162,6 @@
 
 		<textarea class="output" readonly></textarea>
 	</div>
+	<a href="https://github.com/ericandrewlewis/translatorthingie"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 </body>
 </html>
