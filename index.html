@@ -80,7 +80,11 @@
 			this.mapCharacter = function(character) {
 				if ( this.stringTransformer.set[character] ) {
 					var characters = this.stringTransformer.set[character];
-					return characters[ Math.floor(Math.random() * characters.length) ];
+					if ( typeof characters === 'string') {
+						return characters;
+					} else {
+						return characters[ Math.floor(Math.random() * characters.length) ];
+					}
 				} else {
 					return character;
 				}
