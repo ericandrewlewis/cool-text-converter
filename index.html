@@ -51,12 +51,13 @@
 	registerStringTransformer( {
 		id: 'latin-characters-upside-down-and-backwards',
 		set: {
-			A: 'ɐ', B: 'q', C: 'ɔ', D: 'p', E: 'ǝ', F: 'ɟ', G: 'ƃ', H: 'ɥ', I: 'ᴉ', J: 'ɾ', K: 'ʞ',
-			L: 'ן', M: 'ɯ', N: 'u', O: 'o', P: 'd', Q: 'b', R: 'ɹ', S: 's', T: 'ʇ', U: 'n',
-			V: 'ʌ', W: 'ʍ', X: 'x', Y: 'ʎ', Z: 'z',
+			A: '∀', B: '𐐒', C: 'Ɔ', D: 'ᗡ', E: 'Ǝ', F: 'Ⅎ', G: '⅁', H: 'H', I: 'I', J: 'ɾ', K: 'ʞ',
+			L: '˥', M: 'W', N: 'N', O: 'O', P: 'Ԁ', Q: 'Ὁ', R: 'ᴚ', S: 'S', T: '⊥', U: '∩',
+			V: 'Λ', W: 'M', X: 'X', Y: '⅄', Z: 'Z',
 			a: 'ɐ', b: 'q', c: 'ɔ', d: 'p', e: 'ǝ', f: 'ɟ', g: 'ƃ', h: 'ɥ', i: 'ᴉ', j: 'ɾ', k: 'ʞ',
 			l: 'ן', m: 'ɯ', n: 'u', o: 'o', p: 'd', q: 'b', r: 'ɹ', s: 's', t: 'ʇ', u: 'n',
-			v: 'ʌ', w: 'ʍ', x: 'x', y: 'ʎ', z: 'z'
+			v: 'ʌ', w: 'ʍ', x: 'x', y: 'ʎ', z: 'z',
+			',': "'", '.': "˙",
 		},
 		afterCharactersMapped: function(string) {
 			var reversed = '';
@@ -134,7 +135,7 @@
 <body>
 	<h1>Cool Text Converter</h1>
 	<div class="container">
-		<textarea class="input">I fell into a Ring of Fire</textarea>
+		<textarea class="input">oh, inverted world</textarea>
 		<h3>Translate with: </h3>
 		<label>
 			<input
