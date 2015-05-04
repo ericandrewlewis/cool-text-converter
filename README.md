@@ -7,6 +7,10 @@ Spice it up with glyphs from across the Unicode spectrum!
 
 ## Changelog
 
+0.4 - Ğ̇̈et̆̇̈ h̆̇̈ap̆̇̈py̆̇̈!!̆̇̈
+
+* Add string transformation "Smiley Faces"
+
 0.3 - pןɹoʍ pǝʇɹǝʇʌuᴉ ɥo
 
 * Add string transformation "Upside down and reversed text"
