@@ -50,6 +50,15 @@
 	} );
 
 	registerStringTransformer( {
+		id: 'happy-emoji',
+		set: {
+			a: '😀', b: '😄', c: '😎', d: '🙌', e: '💁', f: '💃', g: '🙆', h: '💫',
+			i: '🐬', j: '🍕', k: '🍪', l: '🍰', m: '🍭', n: '🚀', o: '🌞', p: '⭐️',
+			q: '🌠', r: '⚡️', s: '🎆', t: '✨', u: '🎈', v: '🎉', w: '🎊', x: '🎏', y: '🏂', z: '🏄'
+		}
+	});
+
+	registerStringTransformer( {
 		id: 'smiley-faces-on-top',
 		set: {},
 		afterCharactersMapped: function(string) {
@@ -191,6 +200,15 @@
 			       class="translate-group"
 			       value="1">
 			Smiley Faces
+		</label>
+		<label>
+			<input
+			       type="radio"
+			       name="translate-group"
+			       data-character-group-name="happy-emoji"
+			       class="translate-group"
+			       value="1">
+			Happy Emoji
 		</label>
 
 		<textarea class="output" readonly></textarea>
