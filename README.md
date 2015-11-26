@@ -7,6 +7,8 @@ Spice it up with glyphs from across the Unicode spectrum!
 
 ## Changelog
 
+0.5 - 💫😀⭐️⭐️🏂 💁🍭🌞🍕🐬 (Happy Emoji)
+
 0.4 - Ğ̇̈et̆̇̈ h̆̇̈ap̆̇̈py̆̇̈!!̆̇̈
 
 * Add string transformation "Smiley Faces"
